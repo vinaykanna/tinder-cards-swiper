@@ -58,68 +58,25 @@ function EffectTinder({ swiper, on }) {
     });
   };
 
-  const u = (t, r, s, i, o) => {
-    if (n || o)
-      if (i)
-        d(document.querySelector(".swiper-tinder-button-yes"), (e) =>
-          e.classList.add("swiper-tinder-button-hidden")
-        ),
-          d(document.querySelector(".swiper-tinder-button-no"), (e) =>
-            e.classList.add("swiper-tinder-button-hidden")
-          );
-      else {
-        const n = Math.max(Math.min(10 * r - 0.5, 1), 0);
-        d(
-          t.querySelector(".swiper-tinder-label-yes"),
-          (e) => (e.style.opacity = s > 0 ? n : 0)
-        ),
-          d(
-            t.querySelector(".swiper-tinder-label-no"),
-            (e) => (e.style.opacity = s < 0 ? n : 0)
-          ),
-          d(document.querySelector(".swiper-tinder-button-yes"), (e) =>
-            e.classList.remove("swiper-tinder-button-hidden")
-          ),
-          d(document.querySelector(".swiper-tinder-button-no"), (e) =>
-            e.classList.remove("swiper-tinder-button-hidden")
-          ),
-          r >= swiper.params.longSwipesRatio && !i
-            ? s > 0
-              ? (d(document.querySelector(".swiper-tinder-button-yes"), (e) =>
-                  e.classList.add("swiper-tinder-button-active")
-                ),
-                d(document.querySelector(".swiper-tinder-button-no"), (e) =>
-                  e.classList.remove("swiper-tinder-button-active")
-                ))
-              : (d(document.querySelector(".swiper-tinder-button-yes"), (e) =>
-                  e.classList.remove("swiper-tinder-button-active")
-                ),
-                d(document.querySelector(".swiper-tinder-button-no"), (e) =>
-                  e.classList.add("swiper-tinder-button-active")
-                ))
-            : (d(document.querySelector(".swiper-tinder-button-yes"), (e) =>
-                e.classList.remove("swiper-tinder-button-active")
-              ),
-              d(document.querySelector(".swiper-tinder-button-no"), (e) =>
-                e.classList.remove("swiper-tinder-button-active")
-              ));
-      }
-  };
-
   on("beforeInit", () => {
-    if ("tinder" !== swiper.params.effect) return;
+    // Check if the effect is "tinder"
+    if (swiper.params.effect !== "tinder") return;
 
+    // Add custom class names for the tinder effect
     swiper.classNames.push(`${swiper.params.containerModifierClass}tinder`);
     swiper.classNames.push(`${swiper.params.containerModifierClass}3d`);
 
-    const t = {
-      watchSlidesProgress: !0,
-      virtualTranslate: !0,
+    // Define additional parameters for the tinder effect
+    const tinderEffectParams = {
+      watchSlidesProgress: true,
+      virtualTranslate: true,
       longSwipesRatio: 0.1,
-      oneWayMovement: !0,
+      oneWayMovement: true,
     };
 
-    Object.assign(swiper.params, t), Object.assign(swiper.originalParams, t);
+    // Assign the new parameters to swiper's current and original parameters
+    Object.assign(swiper.params, tinderEffectParams);
+    Object.assign(swiper.originalParams, tinderEffectParams);
   });
 
   on("touchStart", (t, c) => {
@@ -140,8 +97,10 @@ function EffectTinder({ swiper, on }) {
 
   on("touchMove", (t) => {
     if ("tinder" !== swiper.params.effect) return;
-    const n = t.touches.currentY - t.touches.startY,
-      i = t.touches.currentX - t.touches.startX;
+
+    const n = t.touches.currentY - t.touches.startY;
+    const i = t.touches.currentX - t.touches.startX;
+
     (s = (Math.abs(i), swiper.size, !1)), r && (r.translateY = n);
   });
 
@@ -174,16 +133,6 @@ function EffectTinder({ swiper, on }) {
   });
 
   on("slideChange", () => {
-    if (
-      swiper.activeIndex === swiper.slides.length - 1 &&
-      !swiper.params.loop
-    ) {
-      const t = swiper.slides[swiper.slides.length - 1],
-        r = t.progress,
-        s = Math.min(Math.max(r, -2), 2),
-        n = swiper.touches.currentX - swiper.touches.startX;
-      u(t, s, n, !0, !0);
-    }
     o || ((a = !1), swiper.emit("tinderSwipe", c < 0 ? "left" : "right"));
   });
 
@@ -217,8 +166,7 @@ function EffectTinder({ swiper, on }) {
         ((m = 0),
         (p = 45 * i * (a < 0 ? -1 : 1)),
         (o = swiper.size * (a < 0 ? -1 : 1) * i + o),
-        void 0 !== t.translateY && (c = t.translateY),
-        u(t, i, a, l)),
+        void 0 !== t.translateY && (c = t.translateY)),
         "top" === t.transformOrigin && (p = -p),
         i > 1 && (f = 5 * (1.2 - i));
       const h = `\n        translate3d(${o}px, ${c}px, ${m}px)\n        rotateZ(${p}deg)\n      `;
