@@ -5,5 +5,4 @@ new Swiper(".swiper", {
   modules: [EffectTinder],
   effect: "tinder",
   grabCursor: true,
-  loop: true,
 });

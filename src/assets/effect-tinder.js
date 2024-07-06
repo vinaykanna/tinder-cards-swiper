@@ -85,6 +85,16 @@ function EffectTinder({ swiper, on }) {
 
       requestAnimationFrame(() => {
         isTouching = false;
+        if (swiper.activeIndex) {
+          const c = swiper.slides[0];
+          const d = swiper.slides[swiper.slides.length - 1];
+          console.log(d.style);
+          c.style.opacity = 0;
+          setTimeout(() => {
+            swiper.removeSlide(0);
+            swiper.appendSlide(c);
+          }, 500);
+        }
       });
     }
   });
@@ -134,12 +144,6 @@ function EffectTinder({ swiper, on }) {
           swiper.size * (currentXOffset < 0 ? -1 : 1) * clampedProgress;
       }
 
-      console.log({
-        translateX,
-        translateY,
-        translateZ,
-      });
-
       const transformString = `
         translate3d(${translateX}px, ${translateY}px, ${translateZ}px)
         rotateZ(${rotateZ}deg)
@@ -159,6 +163,11 @@ function EffectTinder({ swiper, on }) {
 
       slide.style.zIndex = -Math.abs(Math.round(progress)) + slides.length;
       slide.style.transform = slide.tinderTransform || transformString;
+      if (index > 2) {
+        slide.style.opacity = 0;
+      } else {
+        slide.style.opacity = 1;
+      }
     });
   });
 }
