@@ -85,14 +85,12 @@ function EffectTinder({ swiper, on }) {
 
       requestAnimationFrame(() => {
         isTouching = false;
+
         if (swiper.activeIndex) {
-          const c = swiper.slides[0];
-          const d = swiper.slides[swiper.slides.length - 1];
-          console.log(d.style);
-          c.style.opacity = 0;
+          const currentSlide = swiper.slides[0];
           setTimeout(() => {
             swiper.removeSlide(0);
-            swiper.appendSlide(c);
+            swiper.appendSlide(currentSlide);
           }, 0);
         }
       });
@@ -133,8 +131,8 @@ function EffectTinder({ swiper, on }) {
       const clampedProgress = Math.min(Math.max(progress, -2), 2);
 
       let translateX = -slide.swiperSlideOffset;
-      let translateY = (index + 1) * 10;
-      let translateZ = (index + 1) * 10 * clampedProgress;
+      let translateY = (index + 1) * 15;
+      let translateZ = (index + 1) * 15 * clampedProgress;
       let rotateZ = 0;
 
       if (clampedProgress > 0 || (clampedProgress === 0 && isTouching)) {
