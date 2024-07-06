@@ -88,10 +88,8 @@ function EffectTinder({ swiper, on }) {
 
         if (swiper.activeIndex) {
           const currentSlide = swiper.slides[0];
-          setTimeout(() => {
-            swiper.removeSlide(0);
-            swiper.appendSlide(currentSlide);
-          }, 0);
+          swiper.removeSlide(0);
+          swiper.appendSlide(currentSlide);
         }
       });
     }
