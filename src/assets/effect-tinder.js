@@ -67,35 +67,14 @@ function EffectTinder({ swiper, on }) {
     Object.assign(swiper.originalParams, tinderEffectParams);
   });
 
-  on("touchStart", (event, touchEvent) => {
+  on("touchStart", () => {
     if (swiper.params.effect !== "tinder") return;
 
     isTinderEffect = true;
     isAnimating = true;
     isSlideChangePending = true;
 
-    const { clientY: clientYPosition } = touchEvent;
-
-    const { top: elementTop, height: elementHeight } =
-      swiper.el.getBoundingClientRect();
-
-    isTouching = false;
-
-    const closestSlide = touchEvent.target.closest(
-      ".swiper-slide, swiper-slide"
-    );
-    if (
-      closestSlide &&
-      closestSlide.classList.contains("swiper-slide-active")
-    ) {
-      previousActiveIndex = swiper.activeIndex;
-
-      if (clientYPosition - elementTop > elementHeight / 2) {
-        setTransformOriginForSlides("center top", "top");
-      } else {
-        setTransformOriginForSlides("center bottom", "bottom");
-      }
-    }
+    setTransformOriginForSlides("center bottom", "bottom");
   });
 
   on("touchEnd", () => {
@@ -169,7 +148,6 @@ function EffectTinder({ swiper, on }) {
       let translateY = 0;
       let translateZ = 100 * clampedProgress;
       let rotateZ = 0;
-      let opacity = 1;
 
       // Set transform values based on progress and touch offset
       if (clampedProgress > 0 || (clampedProgress === 0 && isTinderEffect)) {
@@ -178,20 +156,20 @@ function EffectTinder({ swiper, on }) {
         translateX +=
           swiper.size * (currentXOffset < 0 ? -1 : 1) * clampedProgress;
 
-        if (slide.translateY !== undefined) {
-          translateY = slide.translateY;
-        }
+        // if (slide.translateY !== undefined) {
+        //   translateY = slide.translateY;
+        // }
+
+        // if (index !== 0) {
+        translateY = index * -10;
+        // }
       }
 
-      // Reverse rotation for slides with top transform origin
-      if (slide.transformOrigin === "top") {
-        rotateZ = -rotateZ;
-      }
-
-      // Adjust opacity for slides with progress greater than 1
-      if (clampedProgress > 1) {
-        opacity = 5 * (1.2 - clampedProgress);
-      }
+      console.log({
+        translateX,
+        translateY,
+        translateZ,
+      });
 
       // Generate transform string
       const transformString = `
@@ -215,7 +193,6 @@ function EffectTinder({ swiper, on }) {
 
       slide.style.zIndex = -Math.abs(Math.round(progress)) + slides.length;
       slide.style.transform = slide.tinderTransform || transformString;
-      // slide.style.opacity = opacity;
     });
   });
 }
