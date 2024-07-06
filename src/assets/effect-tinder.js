@@ -38,9 +38,6 @@ function EffectTinder({ swiper, on }) {
       swiper.animating = false;
     },
   };
-  const d = (e, t) => {
-    e && t(e);
-  };
 
   const setTransformOriginForSlides = (
     transformOriginStyle,
@@ -81,11 +78,14 @@ function EffectTinder({ swiper, on }) {
 
   on("touchStart", (t, c) => {
     if ("tinder" !== swiper.params.effect) return;
+
     (n = !0), (o = !0), (a = !0);
-    const { clientY: d } = c,
-      { top: u, height: m } = swiper.el.getBoundingClientRect();
+
+    const { clientY: d } = c;
+    const { top: u, height: m } = swiper.el.getBoundingClientRect();
     s = !1;
     const p = c.target.closest(".swiper-slide, swiper-slide");
+
     p &&
       p.classList.contains("swiper-slide-active") &&
       ((r = p),
@@ -105,41 +105,45 @@ function EffectTinder({ swiper, on }) {
   });
 
   on("touchEnd", () => {
-    "tinder" === swiper.params.effect &&
-      ((s = !1),
-      (o = !1),
+    // Check if the effect is "tinder"
+    if (swiper.params.effect === "tinder") {
+      // Reset touch and animation flags
+      s = false;
+      o = false;
+
+      // Reset swiper animation frame flag
       requestAnimationFrame(() => {
-        n = !1;
-      }));
+        s = false;
+      });
+    }
   });
 
-  on("setTransition", (t, r) => {
-    "tinder" === swiper.params.effect &&
-      (t.slides.forEach((e) => {
-        (e.style.transitionDuration = `${r}ms`),
-          e.querySelectorAll(".swiper-tinder-label").forEach((t) => {
-            (t.style.transitionDuration = `${r}ms`),
-              e.progress <= 0 && (t.style.opacity = 0);
-          });
-      }),
-      requestAnimationFrame(() => {
-        d(document.querySelector(".swiper-tinder-button-yes"), (e) =>
-          e.classList.remove("swiper-tinder-button-active")
-        ),
-          d(document.querySelector(".swiper-tinder-button-no"), (e) =>
-            e.classList.remove("swiper-tinder-button-active")
-          );
-      }));
+  on("setTransition", (swiper, duration) => {
+    // Check if the effect is "tinder"
+    if (swiper.params.effect === "tinder") {
+      swiper.slides.forEach((slide) => {
+        // Set transition duration for each slide
+        slide.style.transitionDuration = `${duration}ms`;
+      });
+    }
   });
 
   on("slideChange", () => {
-    o || ((a = !1), swiper.emit("tinderSwipe", c < 0 ? "left" : "right"));
+    // Check if not in touch mode
+    if (!o) {
+      // Reset flag and emit tinderSwipe event based on direction
+      a = false;
+      swiper.emit("tinderSwipe", c < 0 ? "left" : "right");
+    }
   });
 
   on("transitionStart", () => {
-    a &&
-      swiper.activeIndex !== i &&
-      ((a = !1), swiper.emit("tinderSwipe", c < 0 ? "left" : "right"));
+    // Check if in swipe mode and the active index has changed
+    if (a && swiper.activeIndex !== i) {
+      // Reset flag and emit tinderSwipe event based on direction
+      a = false;
+      swiper.emit("tinderSwipe", c < 0 ? "left" : "right");
+    }
   });
 
   on("setTranslate", (t, r) => {
@@ -181,4 +185,5 @@ function EffectTinder({ swiper, on }) {
     });
   });
 }
+
 export { EffectTinder };
