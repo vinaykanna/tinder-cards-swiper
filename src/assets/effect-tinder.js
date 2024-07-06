@@ -124,16 +124,6 @@ function EffectTinder({ swiper, on }) {
     }
   });
 
-  on("touchMove", (t) => {
-    if ("tinder" !== swiper.params.effect) return;
-
-    const n = t.touches.currentY - t.touches.startY;
-    const i = t.touches.currentX - t.touches.startX;
-
-    (isTouching = (Math.abs(i), swiper.size, !1)),
-      currentSlideElement && (currentSlideElement.translateY = n);
-  });
-
   on("touchEnd", () => {
     // Check if the effect is "tinder"
     if (swiper.params.effect === "tinder") {
