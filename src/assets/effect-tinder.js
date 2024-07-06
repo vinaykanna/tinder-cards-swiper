@@ -93,7 +93,7 @@ function EffectTinder({ swiper, on }) {
           setTimeout(() => {
             swiper.removeSlide(0);
             swiper.appendSlide(c);
-          }, 500);
+          }, 0);
         }
       });
     }
