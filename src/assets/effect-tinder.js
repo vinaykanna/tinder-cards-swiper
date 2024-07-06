@@ -161,7 +161,7 @@ function EffectTinder({ swiper, on }) {
         // }
 
         // if (index !== 0) {
-        translateY = index * -10;
+        // translateY = index * -10;
         // }
       }
 
