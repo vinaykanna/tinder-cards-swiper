@@ -85,12 +85,6 @@ function EffectTinder({ swiper, on }) {
 
       requestAnimationFrame(() => {
         isTouching = false;
-
-        if (swiper.activeIndex) {
-          const currentSlide = swiper.slides[0];
-          swiper.removeSlide(0);
-          swiper.appendSlide(currentSlide);
-        }
       });
     }
   });
@@ -102,6 +96,19 @@ function EffectTinder({ swiper, on }) {
       });
     }
   });
+
+  const handleSlideRemoval = (slide) => {
+    slide.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+    slide.style.transform = "translate3d(0, 100%, -100px) rotateZ(0deg)";
+    slide.style.opacity = "0";
+    setTimeout(() => {
+      slide.style.transition = "";
+      slide.style.transform = "";
+      slide.style.opacity = "1";
+      swiper.appendSlide(slide);
+      swiper.update();
+    }, 500);
+  };
 
   on("setTranslate", (_, translate) => {
     if (swiper.params.effect !== "tinder") return;
@@ -145,7 +152,20 @@ function EffectTinder({ swiper, on }) {
         rotateZ(${rotateZ}deg)
       `;
 
+      if (index === 0) {
+        console.log({
+          transformString,
+          progress,
+          clampedProgress,
+          isTouching,
+          zindex: -Math.abs(Math.round(progress)) + slides.length,
+        });
+      }
+
       if (clampedProgress >= 1 && !slide.tinderTransform) {
+        if (index === 0) {
+          console.log("coming in first first if");
+        }
         slide.tinderTransform = transformString;
         slide.tinderTransformSlideIndex = index;
       }
@@ -154,15 +174,17 @@ function EffectTinder({ swiper, on }) {
         (slide.tinderTransform && slide.tinderTransformSlideIndex !== index) ||
         !isTouching
       ) {
+        if (index === 0) {
+          console.log("coming in first second if");
+        }
         slide.tinderTransform = "";
       }
 
       slide.style.zIndex = -Math.abs(Math.round(progress)) + slides.length;
       slide.style.transform = slide.tinderTransform || transformString;
-      if (index > 2) {
-        slide.style.opacity = 0;
-      } else {
-        slide.style.opacity = 1;
+
+      if (Math.abs(progress) >= 1) {
+        handleSlideRemoval(slide);
       }
     });
   });
